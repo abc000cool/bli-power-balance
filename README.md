@@ -1,6 +1,6 @@
 # blipb — power-balance BLI benefit model with uncertainty quantification
 
-[![CI](https://github.com/OWNER/bli-power-balance/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/bli-power-balance/actions)
+[![CI](https://github.com/abc000cool/bli-power-balance/actions/workflows/ci.yml/badge.svg)](https://github.com/abc000cool/bli-power-balance/actions)
 [![License: BSD-3](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](LICENSE)
 
 `blipb` is a low-order, open-source, reproducible implementation of the **Drela (2009)
