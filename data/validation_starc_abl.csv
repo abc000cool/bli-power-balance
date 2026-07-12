@@ -1,0 +1,15 @@
+quantity,value
+D_total [kN],27.49528037383178
+D_fuselage [kN],6.218296363853898
+aft-fan thrust [kN],9.165093457943925
+achieved f_phi,0.7782292745030354
+capture / delta,0.5639208054869133
+subsystem PSC (P_K),0.1390966705674098
+subsystem PSC (shaft),0.12326349073516274
+"net power saving, mech drive",0.040043680866453574
+Yildirim 2022 power saving,0.022
+"net power saving, turboelectric",0.015276830480178343
+block-fuel delta 3500nmi (snowball),-0.01883767152005693
+block-fuel delta 3500nmi (no snowball),-0.013953830755597725
+NASA TM-20210016661 design-mission,-0.034
+Welstead-Felder 2016 (obsolete),-0.12

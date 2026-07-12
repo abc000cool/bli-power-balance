@@ -1,0 +1,8 @@
+case,psc_reference,psc_this_work,note
+uniform wake w=0.6,0.33333333333333337,,closed form (exact by construction)
+uniform wake w=0.7,0.26086956521739135,,closed form (exact by construction)
+uniform wake w=0.8,0.18181818181818177,,closed form (exact by construction)
+uniform wake w=0.9,0.09523809523809522,,closed form (exact by construction)
+self-propelled profile n=5,0.1629491384645818,0.16294913846455394,rel. err 0.00%
+self-propelled profile n=7,0.1279084823568859,0.1279084799052872,rel. err 0.00%
+self-propelled profile n=9,0.10474276473052413,0.10474276413608441,rel. err 0.00%

@@ -1,0 +1,126 @@
+"""Export computed results as LaTeX macros -> paper/numbers.tex.
+
+Every quantitative claim in the paper is a macro defined here from the
+cached study data, so the manuscript regenerates from a fresh run of the
+pipeline (SPEC reproducibility requirement).
+
+Run:  uv run python studies/export_numbers.py [--uq-tag ""]
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import plotstyle  # noqa: E402
+
+DATA = plotstyle.DATADIR
+PAPER = Path(__file__).resolve().parents[1] / "paper"
+
+
+def fmt_pct(x: float, dec: int = 1) -> str:
+    return f"{x * 100:.{dec}f}\\%"
+
+
+def main(tag: str = "") -> None:
+    macros: dict[str, str] = {}
+
+    # Baseline flight/BL facts
+    from blipb import BLIComparator
+
+    comp = BLIComparator()
+    macros["ReL"] = f"{comp.flight.reynolds(comp.fuselage.length):.2e}".replace(
+        "e+08", r" \times 10^{8}"
+    )
+    macros["Vinf"] = f"{comp.flight.V:.1f}"
+    macros["thetaTE"] = f"{comp.bl.theta_te * 1000:.0f}"
+    macros["HTE"] = f"{comp.bl.h_te:.2f}"
+    macros["deltaFan"] = f"{comp.profile.delta:.2f}"
+    macros["rHub"] = f"{comp.bl.r_te:.2f}"
+    macros["DragFus"] = f"{comp.bl.drag / 1000:.2f}"
+    macros["PhiSurf"] = f"{comp.bl.phi_surf / 1e6:.2f}"
+
+    # Validation
+    d8 = pd.read_csv(DATA / "validation_d8.csv").set_index("quantity")["value"]
+    macros["DEightPSC"] = fmt_pct(d8["PSC this work"])
+    macros["DEightJet"] = fmt_pct(d8["jet contribution (this work)"])
+    macros["DEightWake"] = fmt_pct(d8["wake contribution (this work)"])
+    macros["DEightFPR"] = f"{d8['solved FPR']:.3f}"
+
+    starc = pd.read_csv(DATA / "validation_starc_abl.csv").set_index("quantity")["value"]
+    macros["StarcFphi"] = f"{starc['achieved f_phi']:.2f}"
+    macros["StarcPSC"] = fmt_pct(starc["subsystem PSC (P_K)"])
+    macros["StarcPSCshaft"] = fmt_pct(starc["subsystem PSC (shaft)"])
+    macros["StarcNetMech"] = fmt_pct(starc["net power saving, mech drive"])
+    macros["StarcNetElec"] = fmt_pct(starc["net power saving, turboelectric"], 2)
+    macros["StarcFuel"] = fmt_pct(starc["block-fuel delta 3500nmi (snowball)"], 2)
+    macros["StarcFuelNoSnow"] = fmt_pct(starc["block-fuel delta 3500nmi (no snowball)"], 2)
+    macros["StarcDtot"] = f"{starc['D_total [kN]']:.1f}"
+    macros["StarcDfus"] = f"{starc['D_fuselage [kN]']:.2f}"
+
+    smith = pd.read_csv(DATA / "validation_smith.csv")
+    errs = [
+        abs(r.psc_this_work / r.psc_reference - 1.0)
+        for r in smith.itertuples()
+        if r.psc_this_work == r.psc_this_work
+    ]
+    macros["SmithErr"] = fmt_pct(max(errs), 2)
+
+    # UQ
+    mom = pd.read_parquet(DATA / f"uq{tag}_pce_moments.parquet")
+    pct = pd.read_parquet(DATA / f"uq{tag}_mc_percentiles.parquet")
+    macros["UQPscMean"] = fmt_pct(mom.loc["psc_aero", "mean"])
+    macros["UQPscSd"] = fmt_pct(mom.loc["psc_aero", "sd"])
+    macros["UQPscPlo"] = fmt_pct(pct.loc["psc_aero", "p5"])
+    macros["UQPscPmed"] = fmt_pct(pct.loc["psc_aero", "p50"])
+    macros["UQPscPhi"] = fmt_pct(pct.loc["psc_aero", "p95"])
+    macros["UQNetPlo"] = fmt_pct(pct.loc["psc_net", "p5"], 2)
+    macros["UQNetPmed"] = fmt_pct(pct.loc["psc_net", "p50"], 2)
+    macros["UQNetPhi"] = fmt_pct(pct.loc["psc_net", "p95"], 2)
+    macros["UQFuelPlo"] = fmt_pct(pct.loc["delta_fuel", "p5"], 2)
+    macros["UQFuelPmed"] = fmt_pct(pct.loc["delta_fuel", "p50"], 2)
+    macros["UQFuelPhi"] = fmt_pct(pct.loc["delta_fuel", "p95"], 2)
+
+    for name, key in (("psc_aero", "Aero"), ("psc_net", "Net"), ("delta_fuel", "Fuel")):
+        st = pd.read_parquet(DATA / f"uq{tag}_sobol_{name}.parquet")["ST"]
+        ranked = st.sort_values(ascending=False)
+        macros[f"Sobol{key}TopName"] = {
+            "f_phi": r"$f_\Phi$", "fpr": "FPR", "x_tr": "$x_{tr}/L$",
+            "n_powerlaw": "$n$", "eta_pol": r"$\eta_{pol}$",
+            "k_dist": r"$k_{dist}$", "eta_elec": r"$\eta_{elec}$",
+        }[ranked.index[0]]
+        macros[f"Sobol{key}TopVal"] = f"{ranked.iloc[0]:.2f}"
+        macros[f"Sobol{key}SecondName"] = {
+            "f_phi": r"$f_\Phi$", "fpr": "FPR", "x_tr": "$x_{tr}/L$",
+            "n_powerlaw": "$n$", "eta_pol": r"$\eta_{pol}$",
+            "k_dist": r"$k_{dist}$", "eta_elec": r"$\eta_{elec}$",
+        }[ranked.index[1]]
+        macros[f"Sobol{key}SecondVal"] = f"{ranked.iloc[1]:.2f}"
+
+    # Conditional Sobol (f_phi >= 0.5), if the study has been run
+    cond_path = DATA / "uq_cond_sobol_psc_net.parquet"
+    if cond_path.exists():
+        st = pd.read_parquet(cond_path)["ST"]
+        macros["SobolCondElec"] = f"{st['eta_elec']:.2f}"
+        macros["SobolCondFphi"] = f"{st['f_phi']:.2f}"
+        macros["SobolCondN"] = f"{st['n_powerlaw']:.2f}"
+        macros["SobolCondKdist"] = f"{st['k_dist']:.2f}"
+        macros["SobolCondFpr"] = f"{st['fpr']:.2f}"
+
+    PAPER.mkdir(exist_ok=True)
+    lines = ["% Auto-generated by studies/export_numbers.py -- do not edit."]
+    for k, v in macros.items():
+        lines.append(f"\\newcommand{{\\num{k}}}{{{v}}}")
+    (PAPER / "numbers.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"wrote {len(macros)} macros to paper/numbers.tex")
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--uq-tag", type=str, default="")
+    args = ap.parse_args()
+    main(tag=args.uq_tag)

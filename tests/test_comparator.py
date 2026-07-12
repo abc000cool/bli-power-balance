@@ -1,6 +1,5 @@
 """Two-case comparator: bookkeeping identity, physical trends, force mode."""
 
-import numpy as np
 import pytest
 
 from blipb import BLIComparator

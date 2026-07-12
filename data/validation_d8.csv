@@ -1,0 +1,14 @@
+quantity,value
+tunnel V [m/s],31.999434665985444
+Re_L (model),7169776.712765268
+fuselage drag [N],7.0909943227791326
+solved FPR,1.034091708608321
+PSC this work,0.09739257441092931
+PSC measured (Uranga 2017),0.082
+shortfall [pts],-1.5392574410929312
+jet contribution (this work),0.08572771635100637
+jet contribution (Hall 2017),0.052
+wake contribution (this work),0.011664858059922751
+wake contribution (Hall 2017),0.006
+surface contribution (this work),0.0
+surface contribution (Hall 2017),0.024

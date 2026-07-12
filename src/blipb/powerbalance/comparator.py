@@ -34,7 +34,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-import numpy as np
 from scipy.optimize import brentq
 
 from blipb.atmosphere import FlightState
