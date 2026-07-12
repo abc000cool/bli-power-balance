@@ -522,11 +522,11 @@ design variables carry uniform distributions over their ranges, uncertain
 technology/physics parameters truncated normals per the NASA reference
 values and the distortion literature. Saltelli-sampled Sobol' indices
 \citep{sobol2001, saltelli2010, herman2017} are computed at base sample
-$N=1024$ ($16\,384$ evaluations; the production script at $N=2^{14}$ is one
-command and changes no conclusion at pilot scale), cross-checked against an
-order-3 polynomial-chaos surrogate \citep{feinberg2015} fitted on a
-Sobol-sequence design and evaluated by $10^4$-sample Monte Carlo for the
-percentile bands. The two independent estimates of the total-order
+$N=2^{14}$ ($262\,144$ evaluations; a $N=1024$ pilot reproduces every
+ranking within its confidence intervals), cross-checked against an order-3
+polynomial-chaos surrogate \citep{feinberg2015} fitted on a Sobol-sequence
+design and evaluated by $10^4$-sample Monte Carlo for the percentile
+bands. The two independent estimates of the total-order
 rankings agree on the dominant parameters for all three outputs.
 
 \begin{table}[t]
@@ -556,11 +556,12 @@ Figure~\ref{fig:sobol} ranks the total-order indices. For the
 $n$ --- a pure uncertainty about what shape of layer actually arrives at
 the fan --- a strong second (\numSobolAeroSecondVal). But for the outputs a
 program manager actually buys --- net power saving and block fuel --- the
-picture inverts: the electrical-chain efficiency $\eta_{\mathrm{elec}}$ is
-the \emph{single largest} contributor ($S_T=\numSobolNetTopVal$), exceeding
-even the ingestion design lever itself ($f_\Phi$: \numSobolNetSecondVal),
-with profile shape ($n$: 0.20) and the distortion slope ($k_{\mathrm{dist}}$:
-0.12) each outranking the FPR design choice (0.07).
+picture changes qualitatively: the electrical-chain efficiency
+$\eta_{\mathrm{elec}}$ --- a pure technology uncertainty --- rises to a
+statistical tie with the ingestion design lever itself as the largest
+contributor ($S_T=\numSobolNetTopVal$ each at production sampling,
+$N=2^{14}$), with profile shape ($n$: 0.20) and the distortion slope
+($k_{\mathrm{dist}}$: 0.12) each outranking the FPR design choice (0.07).
 
 The claim sharpens under conditioning. Restricting the design space to
 installations that already capture at least half the available dissipation

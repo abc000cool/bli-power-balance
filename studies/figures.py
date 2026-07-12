@@ -30,6 +30,15 @@ plotstyle.apply()
 FIG = plotstyle.FIGDIR
 DATA = plotstyle.DATADIR
 
+
+def uq_file(stem: str) -> Path:
+    """Resolve a UQ artifact: data/ first, then data/production/ (where the
+    production run writes so its large samples stay out of git)."""
+    p = DATA / stem
+    if not p.exists() and (DATA / "production" / stem).exists():
+        return DATA / "production" / stem
+    return p
+
 INPUT_LABELS = {
     "f_phi": r"$f_\Phi$",
     "fpr": "FPR",
@@ -246,8 +255,8 @@ def fig6_sobol(tag: str = "") -> None:
     fig, axs = plt.subplots(1, 3, figsize=(6.8, 2.6), sharey=True)
     order = None
     for ax, name in zip(axs, outputs):
-        st = pd.read_parquet(DATA / f"uq{tag}_sobol_{name}.parquet")
-        pce = pd.read_parquet(DATA / f"uq{tag}_pce_sobol_{name}.parquet")
+        st = pd.read_parquet(uq_file(f"uq{tag}_sobol_{name}.parquet"))
+        pce = pd.read_parquet(uq_file(f"uq{tag}_pce_sobol_{name}.parquet"))
         if order is None:
             order = list(st["ST"].sort_values().index)
         y = np.arange(len(order))
@@ -266,8 +275,8 @@ def fig6_sobol(tag: str = "") -> None:
 
 # ---------------------------------------------------------------- Fig 7
 def fig7_uq_histograms(tag: str = "") -> None:
-    mc = pd.read_parquet(DATA / f"uq{tag}_mc_samples.parquet")
-    pct = pd.read_parquet(DATA / f"uq{tag}_mc_percentiles.parquet")
+    mc = pd.read_parquet(uq_file(f"uq{tag}_mc_samples.parquet"))
+    pct = pd.read_parquet(uq_file(f"uq{tag}_mc_percentiles.parquet"))
 
     fig, axs = plt.subplots(1, 2, figsize=(6.6, 2.7))
 
@@ -347,3 +356,4 @@ if __name__ == "__main__":
     fig8_fuel_vs_range()
     print("fig8_fuel_vs_range done")
     print(f"\nAll figures written to {FIG}")
+

@@ -22,6 +22,15 @@ DATA = plotstyle.DATADIR
 PAPER = Path(__file__).resolve().parents[1] / "paper"
 
 
+def uq_file(stem: str) -> Path:
+    """Resolve a UQ artifact: data/ first, then data/production/ (where the
+    production run writes so its large samples stay out of git)."""
+    p = DATA / stem
+    if not p.exists() and (DATA / "production" / stem).exists():
+        return DATA / "production" / stem
+    return p
+
+
 def fmt_pct(x: float, dec: int = 1) -> str:
     return f"{x * 100:.{dec}f}\\%"
 
@@ -71,8 +80,8 @@ def main(tag: str = "") -> None:
     macros["SmithErr"] = fmt_pct(max(errs), 2)
 
     # UQ
-    mom = pd.read_parquet(DATA / f"uq{tag}_pce_moments.parquet")
-    pct = pd.read_parquet(DATA / f"uq{tag}_mc_percentiles.parquet")
+    mom = pd.read_parquet(uq_file(f"uq{tag}_pce_moments.parquet"))
+    pct = pd.read_parquet(uq_file(f"uq{tag}_mc_percentiles.parquet"))
     macros["UQPscMean"] = fmt_pct(mom.loc["psc_aero", "mean"])
     macros["UQPscSd"] = fmt_pct(mom.loc["psc_aero", "sd"])
     macros["UQPscPlo"] = fmt_pct(pct.loc["psc_aero", "p5"])
@@ -86,7 +95,7 @@ def main(tag: str = "") -> None:
     macros["UQFuelPhi"] = fmt_pct(pct.loc["delta_fuel", "p95"], 2)
 
     for name, key in (("psc_aero", "Aero"), ("psc_net", "Net"), ("delta_fuel", "Fuel")):
-        st = pd.read_parquet(DATA / f"uq{tag}_sobol_{name}.parquet")["ST"]
+        st = pd.read_parquet(uq_file(f"uq{tag}_sobol_{name}.parquet"))["ST"]
         ranked = st.sort_values(ascending=False)
         macros[f"Sobol{key}TopName"] = {
             "f_phi": r"$f_\Phi$", "fpr": "FPR", "x_tr": "$x_{tr}/L$",
