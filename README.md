@@ -37,7 +37,7 @@ uv run python studies/run_uq_pilot.py          # Sobol N=1024 + PCE + MC (~20 mi
 uv run python studies/conventions_table.py     # Appendix B cross-table
 uv run python studies/figures.py               # all 8 paper figures
 uv run python studies/export_numbers.py        # paper/numbers.tex macros
-# production UQ (N=2^14, ~262k evals — run overnight):
+# production UQ (N=2^14, ~147k evals — minutes on a modern laptop):
 uv run python studies/run_uq_production.py
 uv run python studies/figures.py --uq-tag _prod
 ```

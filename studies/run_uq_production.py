@@ -1,10 +1,11 @@
-"""Production UQ run: Saltelli N = 2^14 (~262k evaluations).
+"""Production UQ run: Saltelli N = 2^14 (~147k evaluations, first/total-order).
 
 Same pipeline as the pilot but at publication sampling density; outputs are
 tagged `_prod` and written to data/production/ (git-ignored; archive to
-Zenodo).  Expect ~0.5-2 h depending on cores.
+Zenodo).  Runs in minutes on a modern laptop: the boundary-layer solve is
+LRU-cached on quantized x_tr, so only ~90 IBL solves occur.
 
-Run overnight:  uv run python studies/run_uq_production.py
+Run:  uv run python studies/run_uq_production.py
 Then regenerate figures with:  uv run python studies/figures.py --uq-tag _prod
 """
 

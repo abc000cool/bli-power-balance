@@ -1,6 +1,7 @@
 """Pilot UQ run: Saltelli N=1024 Sobol + order-3 PCE + 1e4 MC on surrogate.
 
-~15k model evaluations for the Sobol pass and ~500 for the PCE design;
+~9k model evaluations for the Sobol pass (n_base * 9 with the
+first/total-order Saltelli scheme) and ~500 for the PCE design;
 minutes on a laptop with joblib.  Products under data/:
 
   uq_sobol_<output>.parquet   S1/ST tables per output
@@ -34,7 +35,7 @@ def main(n_base: int = 1024, tag: str = "") -> None:
     datadir.mkdir(exist_ok=True)
 
     t0 = time.time()
-    print(f"Saltelli/Sobol with N = {n_base} ({n_base * 16} evaluations)...")
+    print(f"Saltelli/Sobol with N = {n_base} ({n_base * 9} evaluations)...")
     sob = run_sobol(n_base=n_base)
     for name in OUTPUT_NAMES:
         sob[name].to_parquet(datadir / f"uq{tag}_sobol_{name}.parquet")

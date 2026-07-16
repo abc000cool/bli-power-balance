@@ -25,7 +25,8 @@ def run_sobol(
 ) -> dict[str, pd.DataFrame]:
     """Saltelli/Sobol' analysis of all model outputs.
 
-    Total model evaluations: n_base * (2 * 7 + 2).  Returns, per output, a
+    Total model evaluations: n_base * (7 + 2) — the first/total-order
+    Saltelli scheme (calc_second_order=False).  Returns, per output, a
     DataFrame with S1, S1_conf, ST, ST_conf indexed by input name, plus the
     raw samples/outputs under key '_samples'.
     """
