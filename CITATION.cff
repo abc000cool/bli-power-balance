@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "blipb: power-balance boundary-layer-ingestion benefit model with uncertainty quantification"
+type: software
+authors:
+  - family-names: Pathak
+    given-names: Ansh
+    affiliation: "The Resonance Foundation"
+    email: administrator@theresonancefoundation.org
+repository-code: "https://github.com/abc000cool/bli-power-balance"
+license: BSD-3-Clause
+version: 0.1.0
+date-released: 2026-07-15
+# doi: 10.5281/zenodo.XXXXXXX  # uncomment and fill after the Zenodo record is minted on the v0.1.0 tag
+keywords:
+  - boundary-layer ingestion
+  - power balance
+  - propulsion
+  - uncertainty quantification
+  - Sobol indices
+  - polynomial chaos

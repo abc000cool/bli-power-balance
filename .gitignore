@@ -27,6 +27,8 @@ paper/*.synctex.gz
 paper/*.toc
 paper/*.fdb_latexmk
 paper/*.fls
+paper/main.pdf
+paper/*.xdv
 
 # OS
 Thumbs.db

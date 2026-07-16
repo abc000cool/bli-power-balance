@@ -8,13 +8,12 @@ tags:
   - uncertainty quantification
   - sensitivity analysis
 authors:
-  - name: '[AUTHOR NAME]'
-    orcid: '[ORCID]'
+  - name: Ansh Pathak
     affiliation: 1
 affiliations:
-  - name: '[AFFILIATION]'
+  - name: The Resonance Foundation
     index: 1
-date: '[SUBMISSION DATE]'
+date: 15 July 2026
 bibliography: paper.bib
 ---
 
@@ -85,7 +84,7 @@ The initial implementation was developed with the assistance of an AI coding
 agent (Claude, Anthropic) under continuous human direction and review; all
 physics choices, validation targets and tolerances follow the pre-registered
 specification in `SPEC.md`, and the full test suite and validation notebooks
-were executed and inspected by the authors. [ADJUST THIS STATEMENT TO
-ACCURATELY DESCRIBE YOUR ROLE BEFORE SUBMISSION.]
+were executed and inspected by the authors; the complete build-session
+transcript is archived with the repository for provenance.
 
 # References

@@ -18,6 +18,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage[round]{natbib}
+\usepackage{xcolor}
 \usepackage[colorlinks=true, allcolors=blue!50!black]{hyperref}
 \usepackage{caption}
 \captionsetup{font=small, labelfont=bf}
@@ -28,7 +29,8 @@
 \title{How Robust Is the BLI Benefit?\\
 \large Global Sensitivity and Uncertainty Quantification of a Low-Order
 Power-Balance Model}
-\author{[AUTHOR NAME]\thanks{[title, department, institution, AIAA membership];
+\author{Ansh Pathak\thanks{The Resonance Foundation,
+administrator@theresonancefoundation.org;
 draft prepared with AI assistance under human direction --- see the
 acknowledgments and data-availability statements.}}
 \date{Draft of \today}
@@ -42,8 +44,9 @@ acknowledgments and data-availability statements.}}
 Published estimates of the boundary-layer-ingestion (BLI) propulsion benefit
 for transport aircraft span 2--12\,\% and are frequently contradictory,
 because they measure different quantities under different bookkeeping rules
-and almost never report uncertainty. This paper presents \texttt{blipb}, the
-first open-source, tested implementation of the Drela power-balance BLI
+and almost never report uncertainty. This paper presents \texttt{blipb},
+to our knowledge the first open-source, tested implementation of the Drela
+power-balance BLI
 benefit model, unifying the Smith (1993) wake-ingestion analysis and the
 Hall et al.\ (2017) dissipation decomposition in one reproducible pipeline,
 and subjects it to formal global sensitivity analysis and uncertainty
@@ -54,13 +57,13 @@ satisfies an exact ledger identity ($P_{K,\mathrm{pod}}-P_{K,\mathrm{BLI}}
 $10^{-10}$ in continuous integration), a compressible fan with an explicit
 distortion penalty, a turboelectric chain, and Breguet mission accounting.
 Validation reproduces the Smith analytic limit to \numSmithErr, the D8
-wind-tunnel benefit to within 1.5 percentage points with a mechanistic
+wind-tunnel benefit to within 1.6 percentage points with a mechanistic
 diagnosis of the difference, and brackets the published STARC-ABL
 assessments. Across the seven-dimensional design/uncertainty space, the
 5th--95th percentile band of the aerodynamic power-saving coefficient is
 [\numUQPscPlo, \numUQPscPhi], and the net block-fuel benefit of a
-STARC-ABL-class turboelectric installation is [\numUQFuelPhi,
-\numUQFuelPlo]. The net benefit exhibits an interior optimum near
+STARC-ABL-class turboelectric installation is [\numUQFuelPlo,
+\numUQFuelPhi]. The net benefit exhibits an interior optimum near
 $f_\Phi\approx0.55$ --- full ingestion is a net penalty at realistic
 distortion sensitivities --- and conditional Sobol' indices show that once
 the captured dissipation fraction exceeds 0.5, electrical-chain efficiency
@@ -181,6 +184,18 @@ implementation evaluates the ledger at a single canonical reference state
 (the freestream-static condition), encoded as a frozen \texttt{ControlVolume}
 object shared by construction between the two compared cases --- an
 inconsistent comparison is a type error, not a silent bias.
+Figure~\ref{fig:schematic} shows the control volume and the ledger terms.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\linewidth]{fig1_schematic.pdf}
+  \caption{Power-balance control volume shared by the podded and BLI cases:
+  the fuselage boundary layer carries the cumulative surface dissipation
+  $\theta^*(x)$ to the tail-cone fan face; the ledger splits the delivered
+  mechanical flow power between jet-mixing dissipation and the residual
+  wake at the Trefftz plane.}
+  \label{fig:schematic}
+\end{figure}
 
 \subsection{The two-case comparator}\label{sec:comparator}
 
@@ -281,8 +296,9 @@ edge-velocity distribution comes from the classical von K\'arm\'an axial
 source-line method with a G\"othert-type subsonic correction, blended into a
 stagnation ramp over the inner nose where the slender-body approximation
 fails. The boundary layer is marched with Thwaites' method
-\citep{thwaites1949} in Mangler (axisymmetric) form over the laminar run,
-switched at forced or Michel-criterion transition (whichever is earlier;
+\citep{thwaites1949} in Mangler (axisymmetric) form \citep{mangler1948}
+over the laminar run, switched at forced or Michel-criterion transition
+\citep{michel1951} (whichever is earlier;
 $x_{tr}/L$ is a UQ variable), and continued with Head's entrainment method
 \citep{head1958, cebeci1977} carrying the thin-layer axisymmetric metric
 terms, Ludwieg--Tillmann skin friction \citep{ludwieg1950}, and an
@@ -353,7 +369,7 @@ for UQ) with 63 unit/verification tests at 90\,\% line coverage, continuous
 integration on Linux/macOS/Windows, and pinned environments
 (\texttt{uv.lock}). A single boundary-layer solution costs $\sim$0.1\,s and
 a comparator evaluation $\sim$3\,ms, so the full atlas and a
-16\,000-evaluation Saltelli sweep run in minutes on a laptop. Every figure
+9\,000-evaluation pilot Saltelli sweep run in minutes on a laptop. Every figure
 and every number in this paper (via generated \LaTeX{} macros) regenerates
 from the archived repository.
 
@@ -415,7 +431,7 @@ $\eta_{\mathrm{fill}}=1$ idealization --- so the jet term (\numDEightJet)
 overpredicts the measured 5.2\,\%; the model resolves no fan--airframe
 pressure coupling, so the measured 2.4\,\% \emph{surface} contribution is
 identically absent; the two errors partially cancel. We consider a
-low-order model that lands within 1.5 points of a wind-tunnel measurement
+low-order model that lands within 1.6 points of a wind-tunnel measurement
 \emph{with an explanation of the sign and mechanism of its error} more
 useful to a designer than a tuned match.
 
@@ -433,7 +449,8 @@ At the SPEC baseline with the aft fan carrying one third of cruise thrust
 ($D_{\mathrm{total}}=\numStarcDtot$\,kN, fuselage \numStarcDfus\,kN), the
 force-driven comparator captures $f_\Phi=\numStarcFphi$ and returns a
 subsystem $\mathrm{PSC}$ of \numStarcPSC\ ($P_K$ basis; \numStarcPSCshaft\
-on shaft power) --- consistent with the 11--12\,\% aerodynamic estimates of
+on shaft power) --- of the same order as, though 2--3 points above, the
+11--12\,\% aerodynamic estimates of
 the original concept study \citep{welstead2016}. Converted to aircraft
 level by Eq.~\eqref{eq:netpsc}: with a mechanical drive the net power
 saving is \numStarcNetMech\ (cf.\ 2.1--2.3\,\% from coupled RANS
@@ -506,11 +523,12 @@ practical design trade.
   \label{fig:saturation}
 \end{figure}
 
-Secondary sweeps (archived with the atlas data) show the expected mild
-trends with Mach (PSC falls $\sim$1 point from $M0.72$ to $M0.82$ as
-compressibility deepens the inlet-recovery penalty), altitude (weak), and
-fuselage fineness (slender bodies give thinner layers relative to the hub
-and lower absolute savings).
+Secondary sweeps (archived with the atlas data) show mild trends with Mach
+(PSC rises $\sim$1 point from $M0.72$ to $M0.82$, tracking the growth of
+the recoverable fuselage dissipation with cruise speed; the compressibility
+penalty on inlet recovery is second-order over this range), altitude
+(weak), and fuselage fineness (slender bodies give thinner layers relative
+to the hub and lower absolute savings).
 
 % -------------------------------------------------------------------------
 \section{Global sensitivity and uncertainty}\label{sec:uq}
@@ -522,7 +540,8 @@ design variables carry uniform distributions over their ranges, uncertain
 technology/physics parameters truncated normals per the NASA reference
 values and the distortion literature. Saltelli-sampled Sobol' indices
 \citep{sobol2001, saltelli2010, herman2017} are computed at base sample
-$N=2^{14}$ ($262\,144$ evaluations; a $N=1024$ pilot reproduces every
+$N=2^{14}$ ($147\,456$ evaluations under the first/total-order Saltelli
+scheme; an $N=1024$ pilot reproduces every
 ranking within its confidence intervals), cross-checked against an order-3
 polynomial-chaos surrogate \citep{feinberg2015} fitted on a Sobol-sequence
 design and evaluated by $10^4$-sample Monte Carlo for the percentile
@@ -567,7 +586,7 @@ The claim sharpens under conditioning. Restricting the design space to
 installations that already capture at least half the available dissipation
 ($f_\Phi\in[0.5, 0.9]$; a separate Saltelli pass on the restricted space),
 the ingestion fraction's total-order index for net benefit collapses to
-\numSobolCondFphi\ --- \emph{below} the profile-shape uncertainty
+\numSobolCondFphi\ --- comparable to the profile-shape uncertainty
 (\numSobolCondN) and barely a third of the electrical chain's
 \numSobolCondElec. Once the installation swallows roughly half the layer,
 \emph{the variance of the delivered benefit is governed by the electrical
@@ -597,7 +616,7 @@ computed under the subsystem convention at cruise is itself a
 quantitative illustration of how far bookkeeping conventions alone move
 the ``BLI benefit'' (Section~\ref{sec:atlas}). Net block fuel at
 3000\,nmi has
-median \numUQFuelPmed\ with band [\numUQFuelPhi, \numUQFuelPlo]: the
+median \numUQFuelPmed\ with band [\numUQFuelPlo, \numUQFuelPhi]: the
 distribution overlaps NASA's $-3.4$\,\% only in its favorable tail,
 comfortably contains typical 1--3\,\% estimates, and --- notably ---
 approaches zero benefit at the unfavorable end, quantifying exactly the
@@ -673,10 +692,11 @@ coupled CFD --- and the validation section quantifies by how much.
 An open-source, tested implementation of the Drela power-balance BLI
 benefit model --- unifying Smith's closed forms and Hall's decomposition,
 with an exact bookkeeping identity enforced in CI --- has been used to
-produce the first formal global sensitivity and uncertainty quantification
+produce, to our knowledge, the first formal global sensitivity and
+uncertainty quantification
 of the BLI benefit. Three results carry practical weight. First, the
 validation posture works: the model reproduces the Smith limit exactly,
-lands within 1.5 points of the D8 measurement with a mechanistic account of
+lands within 1.6 points of the D8 measurement with a mechanistic account of
 the difference, and brackets the modern STARC-ABL assessments while
 excluding the obsolete early estimate. Second, the benefit's bookkeeping
 conventions are not interchangeable: the per-propulsor PSC \emph{falls}
@@ -686,7 +706,7 @@ collapsing --- full ingestion is a net penalty at realistic distortion
 sensitivities --- so cross-study comparisons must state their rule, and
 our atlas provides all three views. Third, and centrally: across the
 credible input space the 5--95\,\% band of net block fuel is
-[\numUQFuelPhi, \numUQFuelPlo], and once $f_\Phi\gtrsim0.5$ its variance
+[\numUQFuelPlo, \numUQFuelPhi], and once $f_\Phi\gtrsim0.5$ its variance
 is dominated by electrical-chain efficiency ($S_T=\numSobolCondElec$) and
 fan-face profile/distortion uncertainty (\numSobolCondN,
 \numSobolCondKdist) rather than by ingestion fraction
@@ -698,14 +718,15 @@ establish, and one now reproducible by anyone from the archived pipeline.
 
 % -------------------------------------------------------------------------
 \section*{Acknowledgments}
-[Funding, colleagues.] Portions of the implementation and manuscript were
-drafted with an AI assistant (Claude, Anthropic) under human direction;
-the authors reviewed and are responsible for all content. [ADJUST PER
-JOURNAL POLICY.]
+Portions of the implementation and manuscript were drafted with an AI
+assistant (Claude, Anthropic) under human direction; the authors reviewed
+and are responsible for all content. The complete build-session transcript
+is archived with the repository for provenance.
 
 \section*{Data availability}
 All code, cached study data, and figure-generation scripts are available
-at [REPOSITORY URL] (BSD-3-Clause), archived at [ZENODO DOI] (v0.1.0).
+at \url{https://github.com/abc000cool/bli-power-balance} (BSD-3-Clause),
+archived at [ZENODO DOI] (v0.1.0).
 Every figure and quantitative claim regenerates via
 \texttt{uv sync \&\& pytest} followed by the scripts in
 \texttt{studies/} and \texttt{validation/}.
