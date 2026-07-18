@@ -5,8 +5,7 @@ type: software
 authors:
   - family-names: Pathak
     given-names: Ansh
-    affiliation: "The Resonance Foundation"
-    email: administrator@theresonancefoundation.org
+    email: pathakansh10@gmail.com
 repository-code: "https://github.com/abc000cool/bli-power-balance"
 license: BSD-3-Clause
 version: 0.1.0

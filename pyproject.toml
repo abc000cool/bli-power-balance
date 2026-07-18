@@ -5,7 +5,7 @@ description = "Power-balance boundary-layer-ingestion (BLI) benefit model with u
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
 license = { text = "BSD-3-Clause" }
-authors = [{ name = "The Resonance Foundation", email = "administrator@theresonancefoundation.org" }]
+authors = [{ name = "Ansh Pathak", email = "pathakansh10@gmail.com" }]
 keywords = [
     "boundary-layer ingestion",
     "power balance",

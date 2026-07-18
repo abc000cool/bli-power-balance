@@ -11,7 +11,7 @@ authors:
   - name: Ansh Pathak
     affiliation: 1
 affiliations:
-  - name: The Resonance Foundation
+  - name: Independent Researcher
     index: 1
 date: 15 July 2026
 bibliography: paper.bib

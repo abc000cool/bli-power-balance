@@ -99,4 +99,4 @@ If you use `blipb`, please cite the research paper (in preparation; see
 
 ## License
 
-BSD-3-Clause. © 2026 The Resonance Foundation.
+BSD-3-Clause. © 2026 Ansh Pathak.
