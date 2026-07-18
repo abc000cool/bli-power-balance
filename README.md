@@ -94,7 +94,8 @@ See `SPEC.md` (amendment log) and paper §6 for the complete list.
 ## Citing
 
 If you use `blipb`, please cite the research paper (in preparation; see
-`paper/main.tex`) and the archived software release ([ZENODO DOI on v0.1.0]).
+`paper/main.tex`) and the archived software release
+([doi:10.5281/zenodo.21434699](https://doi.org/10.5281/zenodo.21434699), v0.1.0).
 
 ## License
 

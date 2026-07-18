@@ -11,7 +11,7 @@ repository-code: "https://github.com/abc000cool/bli-power-balance"
 license: BSD-3-Clause
 version: 0.1.0
 date-released: 2026-07-15
-# doi: 10.5281/zenodo.XXXXXXX  # uncomment and fill after the Zenodo record is minted on the v0.1.0 tag
+doi: 10.5281/zenodo.21434699
 keywords:
   - boundary-layer ingestion
   - power balance
