@@ -12,7 +12,7 @@ mission       Breguet range / block-fuel accounting
 uq            end-to-end model wrapper, Sobol (SALib) and PCE (chaospy) drivers
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from blipb.atmosphere import FlightState, isa
 from blipb.geometry import Fuselage
