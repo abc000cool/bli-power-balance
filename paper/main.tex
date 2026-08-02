@@ -61,11 +61,12 @@ assessments. Across the seven-dimensional design/uncertainty space, the
 [\numUQPscPlo, \numUQPscPhi], and the net block-fuel benefit of a
 STARC-ABL-class turboelectric installation is [\numUQFuelPlo,
 \numUQFuelPhi]. The net benefit exhibits an interior optimum near
-$f_\Phi\approx0.55$ --- full ingestion is a net penalty at realistic
-distortion sensitivities --- and conditional Sobol' indices show that once
-the captured dissipation fraction exceeds 0.5, electrical-chain efficiency
-($S_T=0.53$) and fan-face profile shape (0.22) --- not further ingestion
-(0.20) --- dominate the variance of the delivered benefit. Code, data and
+$f_\Phi\approx0.55$; full ingestion is a net penalty at realistic
+distortion sensitivities. Conditional Sobol' indices show that once
+the captured dissipation fraction exceeds 0.5, the variance of the
+delivered benefit is dominated by electrical-chain efficiency
+($S_T=0.53$) and fan-face profile shape (0.22) rather than by further
+ingestion (0.20). Code, data and
 every figure regenerate from an archived repository.
 \end{abstract}
 
@@ -80,8 +81,8 @@ kim2014}. The physical idea is classical \citep{smith1993}: a propulsor that
 ingests the low-momentum air of the airframe's boundary layer needs a
 smaller jet velocity increment to produce the same net force, so it deposits
 less kinetic energy into the atmosphere and requires less mechanical power.
-The engineering question --- \emph{how large is the benefit for a realistic
-configuration, and how confident are we in that number?} --- has proven
+The engineering question (\emph{how large is the benefit for a realistic
+configuration, and how confident are we in that number?}) has proven
 stubbornly difficult, for three reasons.
 
 First, the benefit resists conventional bookkeeping. For a BLI
@@ -91,7 +92,7 @@ stream tube, so the split of the streamwise force into ``thrust'' and
 Different conventions yield different benefit numbers from identical flow
 fields, and the literature contains examples of each. \citet{drela2009}
 resolved the ambiguity by replacing the force ledger with a mechanical
-energy ledger --- the \emph{power balance} --- in which only scalar,
+energy ledger, the \emph{power balance}, in which only scalar,
 positive-definite power and dissipation terms appear and no thrust/drag
 split is ever performed. The power balance has since become the standard
 language of BLI benefit analysis \citep{hall2017, uranga2017}.
@@ -111,7 +112,7 @@ dissipation mechanisms. Recent reviews \citep{moirou2023, ma2025} emphasize
 that these numbers measure \emph{different quantities under different
 rules}, and call explicitly for reconciliation in a common framework.
 
-Third --- and this is the gap this paper addresses --- the field has
+Third, and this is the gap this paper addresses, the field has
 essentially no uncertainty quantification. High-fidelity studies
 \citep{yildirim2022, gray2018} are structurally unable to sweep the joint
 design/uncertainty space (each point is a RANS solve), and the low-order
@@ -140,7 +141,7 @@ design/uncertainty space of a STARC-ABL-class installation.
 \textbf{(iv)}~It provides a parametric benefit atlas from which a conceptual
 designer can read the expected saving with confidence bands for a chosen
 ingestion fraction, fan pressure ratio and mission, including an explicit
-account of a bookkeeping subtlety --- the \emph{dilution effect} --- that
+account of a bookkeeping subtlety, the \emph{dilution effect}, that
 makes the per-propulsor benefit ratio \emph{fall} with ingestion fraction
 even as the raw aircraft-level saving grows, while the \emph{net} saving
 peaks at intermediate ingestion and collapses beyond it
@@ -179,7 +180,7 @@ layer carries an integrated ledger of the energy already lost, which is
 exactly the quantity an ingesting propulsor can partially recover. Our
 implementation evaluates the ledger at a single canonical reference state
 (the freestream-static condition), encoded as a frozen \texttt{ControlVolume}
-object shared by construction between the two compared cases --- an
+object shared by construction between the two compared cases, so that an
 inconsistent comparison is a type error, not a silent bias.
 Figure~\ref{fig:schematic} shows the control volume and the ledger terms.
 
@@ -217,9 +218,9 @@ dissipation fraction
   \label{eq:fphi}
 \end{equation}
 %
-the fraction of the layer's kinetic-energy defect --- equivalently, by
+the fraction of the layer's kinetic-energy defect (equivalently, by
 Eq.~\eqref{eq:kethickness}, of the cumulative upstream surface dissipation
-footprint --- swallowed by the fan. An adiabatic boundary layer preserves
+footprint) swallowed by the fan. An adiabatic boundary layer preserves
 total temperature while destroying total pressure, so the fan inherits
 $T_{t,\mathrm{in}}=T_{t\infty}$ but a mass-averaged
 $\bar p_{t,\mathrm{in}}<p_{t\infty}$; applying the FPR to this degraded
@@ -244,8 +245,8 @@ the total momentum-defect flux. The power-saving coefficient is
 $\mathrm{PSC} = 1 - P_{K,\mathrm{BLI}} / P_{K,\mathrm{pod}}$.
 
 \paragraph{Exact ledger identity.} Appendix~A shows, by rearrangement of
-the defect integrals only --- valid for \emph{any} jet velocities the fan
-model produces --- that
+the defect integrals only, and hence for \emph{any} jet velocities the fan
+model produces, that
 %
 \begin{equation}
   P_{K,\mathrm{pod}} - P_{K,\mathrm{BLI}}
@@ -266,7 +267,7 @@ identity is algebraically exact, it functions as an automated
 bookkeeping-residual test: every comparator evaluation asserts it to
 $10^{-10}$ relative (observed residuals are at machine precision,
 $\mathcal{O}(10^{-16})$), and any future modification that breaks energy
-accounting fails the continuous-integration suite loudly. This addresses
+accounting causes an immediate continuous-integration failure. This addresses
 the double-counting and control-volume-inconsistency pitfalls that reviews
 identify as the dominant error sources in low-order BLI studies
 \citep{moirou2023}.
@@ -307,14 +308,14 @@ Eq.~\eqref{eq:kethickness} without a lag equation. The trailing-edge state
 is carried to the freestream-static reference station by the Squire--Young
 closure \citep{squireyoung1938} applied to the momentum-defect area
 $r\theta$. Solutions with $H>2.4$ anywhere on the body are flagged invalid
-and excluded from all maps --- never silently plotted.
+and excluded from all maps rather than silently plotted.
 
 At the frozen baseline (Table~\ref{tab:baseline}: $M_\infty=0.785$,
 FL350, $L=37$\,m, $Re_L=\numReL$), the chain yields a trailing-edge momentum
 thickness of \numthetaTE\,mm, shape factor \numHTE, fan-face profile
 thickness $\delta=\numdeltaFan$\,m on a hub of $r_{\mathrm{hub}}
 =\numrHub$\,m, fuselage drag \numDragFus\,kN and surface dissipation
-\numPhiSurf\,MW --- a boundary layer of the same order as the fan radius,
+\numPhiSurf\,MW. The layer is of the same order as the fan radius,
 which is precisely the STARC-ABL regime.
 
 \begin{table}[t]
@@ -352,7 +353,7 @@ shaft power of the aircraft,
 with $D_{\mathrm{total}} = W g/(L/D)$ and $\eta_{\mathrm{prop}}=0.80$ for
 the underwing turbofans; setting $\eta_{\mathrm{elec}}=1$ recovers a
 mechanically driven fan (D8-style architecture). The BLI power fraction is
-thus \emph{dynamic} --- it grows with the captured stream tube --- rather
+thus \emph{dynamic}, growing with the captured stream tube, rather
 than frozen at a design-point value, keeping ingestion sweeps physically
 consistent. Block fuel follows Breguet at fixed range with the effective
 TSFC scaled by $(1-\mathrm{PSC}_{\mathrm{net}})$ and an empty-weight
@@ -374,7 +375,7 @@ from the archived repository.
 \section{Verification and validation}\label{sec:vv}
 
 Verification and validation follow the frozen targets of \texttt{SPEC.md},
-with each reference reproduced under \emph{its own} comparison rule ---
+with each reference reproduced under \emph{its own} comparison rule:
 published benefit numbers are not a single scalar and must not be force-fit
 globally.
 
@@ -385,8 +386,8 @@ method reproduces the Blasius momentum thickness within 1.0\,\% and skin
 friction within 1.2\,\%; Falkner--Skan stagnation flow is captured within
 the method's documented 6--8\,\%. Head's method with Ludwieg--Tillmann
 tracks the $0.0592\,Re_x^{-1/5}$ correlation within 6\,\% over
-$Re_x\in[2\times10^6, 10^8]$. Against Schultz--Grunow --- closer to truth
-at high Reynolds number --- Ludwieg--Tillmann underpredicts by up to
+$Re_x\in[2\times10^6, 10^8]$. Against Schultz--Grunow, which is closer to
+truth at high Reynolds number, Ludwieg--Tillmann underpredicts by up to
 $\sim$11\,\% at $Re_x=10^8$, where $Re_\theta\approx7\times10^5$ at the
 cruise fuselage tail exceeds the correlation's calibration range. We flag
 this deliberately rather than hiding it: it is a bias on \emph{absolute}
@@ -408,7 +409,7 @@ With an ideal fan, no distortion, low Mach and full ingestion at the
 self-propelled condition, the comparator must collapse onto the closed-form
 ledger of Section~\ref{sec:unification}. It does: across power-law
 exponents $n\in\{5,7,9\}$ the maximum deviation is \numSmithErr\ (target
-$\le2\,\%$) --- the comparator and the closed form are the same algebra
+$\le2\,\%$). The comparator and the closed form are the same algebra
 evaluated through different code paths, so the agreement verifies the
 implementation rather than the physics.
 
@@ -423,8 +424,8 @@ Figure~\ref{fig:d8} compares the resulting decomposition with the
 measurement. The model gives $\mathrm{PSC}=\numDEightPSC$ against
 $8.2\pm0.8$\,\%, i.e.\ $+0.7$ points above the experimental band, with a
 clean mechanistic diagnosis. The low-order fan re-energizes the captured
-profile to a uniform jet total pressure --- a structural
-$\eta_{\mathrm{fill}}=1$ idealization --- so the jet term (\numDEightJet)
+profile to a uniform jet total pressure, a structural
+$\eta_{\mathrm{fill}}=1$ idealization, so the jet term (\numDEightJet)
 overpredicts the measured 5.2\,\%; the model resolves no fan--airframe
 pressure coupling, so the measured 2.4\,\% \emph{surface} contribution is
 identically absent; the two errors partially cancel. We consider a
@@ -446,7 +447,7 @@ At the SPEC baseline with the aft fan carrying one third of cruise thrust
 ($D_{\mathrm{total}}=\numStarcDtot$\,kN, fuselage \numStarcDfus\,kN), the
 force-driven comparator captures $f_\Phi=\numStarcFphi$ and returns a
 subsystem $\mathrm{PSC}$ of \numStarcPSC\ ($P_K$ basis; \numStarcPSCshaft\
-on shaft power) --- of the same order as, though 2--3 points above, the
+on shaft power), of the same order as, though 2--3 points above, the
 11--12\,\% aerodynamic estimates of
 the original concept study \citep{welstead2016}. Converted to aircraft
 level by Eq.~\eqref{eq:netpsc}: with a mechanical drive the net power
@@ -481,15 +482,15 @@ flags matter for off-design fineness/Mach corners of the extended maps in
 the repository). Two structural features deserve emphasis because they
 reconcile apparently conflicting intuitions in the literature.
 
-\paragraph{The dilution effect.} The \emph{subsystem} PSC ---
-saving per unit of that propulsor's podded-twin power --- \emph{decreases}
+\paragraph{The dilution effect.} The \emph{subsystem} PSC, the
+saving per unit of that propulsor's podded-twin power, \emph{decreases}
 monotonically with $f_\Phi$ at fixed FPR. The reason is bookkeeping, not
 physics: each marginal slice of captured boundary layer is faster and less
 degraded than the last (Eq.~\eqref{eq:fphi} weights the deep, slow fluid
 most), while the podded twin grows in proportion to the captured force
 share, so the \emph{ratio} dilutes even as the \emph{absolute} saving
 grows. Comparisons of PSC values across studies that sized their propulsors
-differently are therefore not comparisons of the same quantity --- a
+differently are therefore not comparisons of the same quantity, a
 concrete instance of the reviews' reconciliation warning
 \citep{moirou2023, ma2025}.
 
@@ -569,21 +570,21 @@ $\eta_{\mathrm{elec}}$ & technology & trunc.\ normal & $\mathcal N(0.92, 0.02)$ 
 Figure~\ref{fig:sobol} ranks the total-order indices. For the
 \emph{aerodynamic} subsystem PSC, the design variable dominates as expected
 ($f_\Phi$: $S_T=\numSobolAeroTopVal$), with the fan-face profile exponent
-$n$ --- a pure uncertainty about what shape of layer actually arrives at
-the fan --- a strong second (\numSobolAeroSecondVal). But for the outputs a
-program manager actually buys --- net power saving and block fuel --- the
+$n$, a pure uncertainty about what shape of layer actually arrives at
+the fan, a strong second (\numSobolAeroSecondVal). But for the outputs a
+program manager actually buys, net power saving and block fuel, the
 picture changes qualitatively: the electrical-chain efficiency
-$\eta_{\mathrm{elec}}$ --- a pure technology uncertainty --- rises to a
+$\eta_{\mathrm{elec}}$, a pure technology uncertainty, rises to a
 statistical tie with the ingestion design lever itself as the largest
 contributor ($S_T=\numSobolNetTopVal$ each at production sampling,
 $N=2^{14}$), with profile shape ($n$: 0.20) and the distortion slope
 ($k_{\mathrm{dist}}$: 0.12) each outranking the FPR design choice (0.07).
 
-The claim sharpens under conditioning. Restricting the design space to
+Conditioning the analysis sharpens this result. Restricting the design space to
 installations that already capture at least half the available dissipation
 ($f_\Phi\in[0.5, 0.9]$; a separate Saltelli pass on the restricted space),
 the ingestion fraction's total-order index for net benefit collapses to
-\numSobolCondFphi\ --- comparable to the profile-shape uncertainty
+\numSobolCondFphi, comparable to the profile-shape uncertainty
 (\numSobolCondN) and barely a third of the electrical chain's
 \numSobolCondElec. Once the installation swallows roughly half the layer,
 \emph{the variance of the delivered benefit is governed by the electrical
@@ -606,7 +607,7 @@ interval than a decile of additional ingestion.
 Figure~\ref{fig:uqhist} shows the output distributions over the full input
 space. The subsystem aerodynamic PSC has median \numUQPscPmed\ with a
 5--95\,\% band of [\numUQPscPlo, \numUQPscPhi]. The overlaid D8
-measurement (8.2\,\%) lies \emph{below} this band --- deliberately so: it
+measurement (8.2\,\%) lies \emph{below} this band, deliberately so: it
 was measured under a different rule (self-propelled whole-model power) on
 a different configuration, and its position outside a distribution
 computed under the subsystem convention at cruise is itself a
@@ -615,7 +616,7 @@ the ``BLI benefit'' (Section~\ref{sec:atlas}). Net block fuel at
 3000\,nmi has
 median \numUQFuelPmed\ with band [\numUQFuelPlo, \numUQFuelPhi]: the
 distribution overlaps NASA's $-3.4$\,\% only in its favorable tail,
-comfortably contains typical 1--3\,\% estimates, and --- notably ---
+comfortably contains typical 1--3\,\% estimates, and
 approaches zero benefit at the unfavorable end, quantifying exactly the
 warning of \citet{giannakakis2020} without requiring their mass bookkeeping
 to reach it. The obsolete 12\,\% early estimate lies far outside the
@@ -659,13 +660,13 @@ space the coupled solutions are worth buying, and how much of any promised
 benefit is exposed to which uncertainty.
 
 \paragraph{Limitations.} (i) The fan-suction \emph{surface} dissipation
-term --- 2.4 points of the D8's 8.2 --- requires coupled aero-propulsive
+term (2.4 points of the D8's 8.2) requires coupled aero-propulsive
 analysis and is structurally absent; our benefit decomposition is
 correspondingly conservative on that mechanism while optimistic on jet
 refill. (ii) The boundary layer is axisymmetric with a power-law fan-face
 surrogate; real installations ingest three-dimensional, distorted layers
 (the $n$ and $k_{\mathrm{dist}}$ inputs are the low-order proxies, and the
-Sobol' analysis shows they matter --- which is itself an argument for
+Sobol' analysis shows they matter, which is itself an argument for
 better characterization, not merely a caveat). (iii) Ludwieg--Tillmann
 underpredicts absolute skin friction at cruise $Re_\theta$ by up to
 $\sim$10\,\% (bounded in CI); the PSC ratio is insensitive but absolute
@@ -673,34 +674,34 @@ dissipation figures inherit the bias. (iv) No installed-mass, trim, or
 noise accounting: the mission deltas isolate the propulsive mechanism under
 a fixed snowball factor. (v) Transition location is treated as an input
 uncertainty rather than predicted. Each limitation is visible in the code
-as an explicit assumption with a test or a UQ variable attached, which is
-the posture we believe low-order aircraft analysis should adopt generally.
+as an explicit assumption with a test or a UQ variable attached, a
+practice we believe low-order aircraft analysis should adopt generally.
 
 \paragraph{When the low-order tool suffices.} For concept screening,
 technology-sensitivity ranking, and uncertainty budgeting, the model's
 $\sim$3\,ms evaluations and exact bookkeeping make it strictly more
 informative than point estimates quoted without uncertainty. For absolute
 performance guarantees on a specific outer mold line, it does not replace
-coupled CFD --- and the validation section quantifies by how much.
+coupled CFD, and the validation section quantifies by how much.
 
 % -------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusions}
 
 An open-source, tested implementation of the Drela power-balance BLI
-benefit model --- unifying Smith's closed forms and Hall's decomposition,
-with an exact bookkeeping identity enforced in CI --- has been used to
+benefit model, unifying Smith's closed forms and Hall's decomposition
+with an exact bookkeeping identity enforced in CI, has been used to
 produce, to our knowledge, the first formal global sensitivity and
 uncertainty quantification
 of the BLI benefit. Three results carry practical weight. First, the
-validation posture works: the model reproduces the Smith limit exactly,
+validation approach works: the model reproduces the Smith limit exactly,
 lands within 1.6 points of the D8 measurement with a mechanistic account of
 the difference, and brackets the modern STARC-ABL assessments while
 excluding the obsolete early estimate. Second, the benefit's bookkeeping
 conventions are not interchangeable: the per-propulsor PSC \emph{falls}
 with ingestion fraction by dilution, the raw aircraft-level saving grows
 sublinearly, and the net saving peaks near $f_\Phi\approx0.55$ before
-collapsing --- full ingestion is a net penalty at realistic distortion
-sensitivities --- so cross-study comparisons must state their rule, and
+collapsing (full ingestion is a net penalty at realistic distortion
+sensitivities), so cross-study comparisons must state their rule, and
 our atlas provides all three views. Third, and centrally: across the
 credible input space the 5--95\,\% band of net block fuel is
 [\numUQFuelPlo, \numUQFuelPhi], and once $f_\Phi\gtrsim0.5$ its variance
@@ -709,9 +710,10 @@ fan-face profile/distortion uncertainty (\numSobolCondN,
 \numSobolCondKdist) rather than by ingestion fraction
 (\numSobolCondFphi). The next percentage point of
 confident BLI benefit is more likely to come from transmission efficiency
-and inlet-distortion characterization than from more aggressive ingestion
---- a conclusion only a systematic parametric-plus-UQ study could
-establish, and one now reproducible by anyone from the archived pipeline.
+and inlet-distortion characterization than from more aggressive ingestion.
+That conclusion could only be established by a systematic
+parametric-plus-UQ study, and it is now reproducible by anyone from the
+archived pipeline.
 
 % -------------------------------------------------------------------------
 \section*{Acknowledgments}
@@ -722,8 +724,8 @@ of it, and is responsible for its content.
 \section*{Data availability}
 All code, cached study data, and figure-generation scripts are available
 at \url{https://github.com/abc000cool/bli-power-balance} (BSD-3-Clause),
-archived at \href{https://doi.org/10.5281/zenodo.21435006}{doi:10.5281/zenodo.21435006}
-(v0.1.1).
+archived at \href{https://doi.org/10.5281/zenodo.21762542}{doi:10.5281/zenodo.21762542}
+(v0.1.2).
 Every figure and quantitative claim regenerates via
 \texttt{uv sync \&\& pytest} followed by the scripts in
 \texttt{studies/} and \texttt{validation/}.
@@ -774,7 +776,7 @@ Four ingestion-fraction conventions circulate; for the baseline
 $n=7$ profile on the SPEC annulus, capture heights giving
 $f_\Phi\in\{0.25, 0.50, 0.75\}$ correspond to mass fractions
 $\{0.08, 0.21, 0.40\}$, momentum-defect fractions $\{0.27, 0.53, 0.77\}$
-and annulus-area fractions $\{0.11, 0.25, 0.44\}$ of the layer --- the
+and annulus-area fractions $\{0.11, 0.25, 0.44\}$ of the layer. The
 spread across conventions exceeds a factor of three at low capture, which
 alone explains much of the apparent disagreement between studies that
 quote ``ingestion fraction'' without a definition. Cross-conversion

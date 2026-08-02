@@ -8,9 +8,9 @@ authors:
     email: pathakansh10@gmail.com
 repository-code: "https://github.com/abc000cool/bli-power-balance"
 license: BSD-3-Clause
-version: 0.1.1
+version: 0.1.2
 date-released: 2026-07-18
-doi: 10.5281/zenodo.21435006
+doi: 10.5281/zenodo.21762542
 keywords:
   - boundary-layer ingestion
   - power balance

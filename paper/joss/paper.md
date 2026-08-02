@@ -19,8 +19,8 @@ bibliography: paper.bib
 
 # Summary
 
-Boundary-layer ingestion (BLI) — placing an aircraft propulsor so it swallows
-the slow air of the airframe's boundary layer — is one of the few remaining
+Boundary-layer ingestion (BLI), placing an aircraft propulsor so it swallows
+the slow air of the airframe's boundary layer, is one of the few remaining
 airframe-propulsion integration measures projected to cut transport-aircraft
 fuel burn by several percent. Because the airframe wake and the propulsive jet
 share a stream tube, conventional thrust/drag bookkeeping is ambiguous for BLI
@@ -73,7 +73,8 @@ with published cross-conversions; and the exact ledger identity
 $P_{K,\mathrm{pod}} - P_{K,\mathrm{BLI}} = \Delta\Phi_{\mathrm{jet}} +
 \Delta\Phi_{\mathrm{wake}}$ is asserted at every evaluation and enforced to
 $10^{-10}$ relative in continuous integration, so any future modification
-that breaks energy bookkeeping fails loudly. Known low-order biases (e.g.
+that breaks energy bookkeeping fails continuous integration
+immediately. Known low-order biases (e.g.
 Ludwieg–Tillmann skin-friction underprediction at very high $Re_\theta$) are
 documented in the frozen specification (`SPEC.md`) and bounded by regression
 tests rather than hidden.
